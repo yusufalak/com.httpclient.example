@@ -1,0 +1,14 @@
+# spring
+spring:
+   main:
+     web-application-type: servlet
+
+http:
+  enable-logging: true
+  connection-timeout: 5000
+  socket-timeout: 20000 
+  request-timeout: 20000
+
+commons:
+  logger:
+    enabled: true
