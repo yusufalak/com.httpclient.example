@@ -16,6 +16,8 @@ import com.httpclient.example.commons.exception.SubChannelException;
 import com.httpclient.example.commons.httpclient.IHttpClientService;
 import com.httpclient.example.commons.httpclient.models.HttpRequestModel;
 import com.httpclient.example.commons.httpclient.models.HttpResponseModel;
+import com.httpclient.example.commons.service.IApiServiceResponse;
+import com.httpclient.example.commons.service.ServiceResponseModel;
 
 @RestController
 @RequestMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -24,10 +26,13 @@ public class RestChannel {
 	@Autowired
 	@Qualifier("commons.blockingHttpClientService1")
 	private IHttpClientService blockingHttpClientService;
-	
+
 	@Autowired
 	@Qualifier("commons.httpClientService1")
 	private IHttpClientService httpClientService;
+
+	@Autowired
+	private IApiServiceResponse apiServiceResponse;
 
 	@ResponseStatus(HttpStatus.OK)
 	@ResponseBody
@@ -48,5 +53,14 @@ public class RestChannel {
 	@PostMapping(value = "/blockingHttpClient")
 	public HttpResponseModel blockingHttpClient(@RequestBody HttpRequestModel httpRequest) throws SubChannelException {
 		return blockingHttpClientService.execute(httpRequest);
+	}
+
+	@ResponseStatus(HttpStatus.OK)
+	@ResponseBody
+	@PostMapping(value = "/service")
+	public ServiceResponseModel getResponseModel(@RequestBody HttpRequestModel httpRequest) throws SubChannelException {
+		HttpResponseModel httpResponse = blockingHttpClientService.execute(httpRequest);
+		ServiceResponseModel model = apiServiceResponse.parse(httpResponse);
+		return model;
 	}
 }
